@@ -4,10 +4,12 @@ import FooterComponent from "../Components/FooterComponent/FooterComponent.jsx";
 
 const MainLayout = () => {
     return (
-        <div>
-            <NavbarComponent></NavbarComponent>
-            <Outlet></Outlet>
-            <FooterComponent></FooterComponent>
+        <div className="container mx-auto min-h-screen flex flex-col">
+            <NavbarComponent />
+            <div className="flex-grow">
+                <Outlet />
+            </div>
+            <FooterComponent />
         </div>
     );
 };
