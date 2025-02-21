@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
@@ -97,4 +101,9 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.writing-mode-vertical {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
 }
