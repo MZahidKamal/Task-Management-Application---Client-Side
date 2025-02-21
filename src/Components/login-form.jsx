@@ -16,7 +16,7 @@ export function LoginForm({className, ...props}) {
             <Card>
 
                 <CardHeader>
-                    <CardTitle className="text-2xl">Sign In</CardTitle>
+                    <CardTitle className="text-5xl font-bold mb-5">Sign In</CardTitle>
                     <CardDescription>Enter your email below to login to your account</CardDescription>
                 </CardHeader>
 

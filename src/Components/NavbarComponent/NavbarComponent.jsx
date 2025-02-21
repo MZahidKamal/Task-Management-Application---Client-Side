@@ -9,6 +9,12 @@ const NavbarComponent = () => {
             <Link to={{pathname:'/'}}>
                 <Button variant="outline" className={'ml-10 cursor-pointer'}>Home</Button>
             </Link>
+            <Link to={{pathname:'/sign-up'}}>
+                <Button variant="outline" className={'ml-10 cursor-pointer'}>Sign Up</Button>
+            </Link>
+            <Link to={{pathname:'/sign-in'}}>
+                <Button variant="outline" className={'ml-10 cursor-pointer'}>Sign In</Button>
+            </Link>
         </div>
     );
 };

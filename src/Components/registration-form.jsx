@@ -16,7 +16,7 @@ export function RegistrationForm({className, ...props}) {
             <Card>
 
                 <CardHeader>
-                    <CardTitle className="text-2xl">Sign Up</CardTitle>
+                    <CardTitle className="text-5xl font-bold mb-5">Sign Up</CardTitle>
                     <CardDescription>Write your credentials below to create your account</CardDescription>
                 </CardHeader>
 
