@@ -43,7 +43,7 @@ const AddTaskComponent = () => {
     }
 
     return (
-        <Card className="w-1/2">
+        <Card className="w-1/2 mx-auto my-6">
             <CardHeader>
                 <CardTitle className={'text-2xl'}>Create New Task</CardTitle>
             </CardHeader>

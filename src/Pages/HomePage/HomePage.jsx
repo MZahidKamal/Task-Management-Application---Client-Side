@@ -4,7 +4,6 @@ import AllTasksComponent from "@/Components/AllTasksComponent/AllTasksComponent.
 const HomePage = () => {
     return (
         <div>
-            <h1 className={'text-5xl font-bold my-5'}>HomePage</h1>
             <AddTaskComponent></AddTaskComponent>
             <AllTasksComponent></AllTasksComponent>
         </div>
