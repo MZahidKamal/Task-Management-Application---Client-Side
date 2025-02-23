@@ -1,6 +1,8 @@
 import {Outlet} from "react-router";
 import NavbarComponent from "../Components/NavbarComponent/NavbarComponent.jsx";
 import FooterComponent from "../Components/FooterComponent/FooterComponent.jsx";
+import {ToastContainer} from 'react-toastify';
+
 
 const MainLayout = () => {
     return (
@@ -10,6 +12,19 @@ const MainLayout = () => {
                 <Outlet />
             </div>
             <FooterComponent />
+
+            <ToastContainer
+                position="bottom-right"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={true}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            ></ToastContainer>
+
         </div>
     );
 };
