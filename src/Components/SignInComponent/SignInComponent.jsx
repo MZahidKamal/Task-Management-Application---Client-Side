@@ -1,4 +1,4 @@
-import {LoginForm} from "@/Components/login-form.jsx";
+import {LoginForm} from "@/Components/ui/login-form.jsx";
 import {useContext} from "react";
 import AuthContext from "@/Providers/AuthContext.jsx";
 import {useNavigate} from "react-router-dom";

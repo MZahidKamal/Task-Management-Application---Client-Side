@@ -1,16 +1,32 @@
-import {cn} from "@/lib/utils"
-import {Button} from "@/components/ui/button"
+import {cn} from "@/lib/utils.js"
+import {Button} from "@/Components/ui/button.jsx"
 import {
     Card,
     CardContent,
     CardDescription,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
-import {Input} from "@/components/ui/input"
-import {Label} from "@/components/ui/label"
+} from "@/Components/ui/card.jsx"
+import {Input} from "@/Components/ui/input.jsx"
+import {Label} from "@/Components/ui/label.jsx"
+import {useContext} from "react";
+import AuthContext from "@/Providers/AuthContext.jsx";
+import {useNavigate} from "react-router-dom";
+
 
 export function LoginForm({className, ...props}) {
+
+
+    const {signInWithGoogle} = useContext(AuthContext);
+    const navigate = useNavigate();
+
+
+    const handleLoginWithGoogleClick = async () => {
+        await signInWithGoogle();
+        navigate('/');
+    }
+
+
     return (
         (<div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card>
@@ -38,7 +54,6 @@ export function LoginForm({className, ...props}) {
                             </div>
 
                             <Button type="submit" className="w-full">Sign In</Button>
-                            <Button variant="outline" className="w-full">Login with Google</Button>
 
                         </div>
 
@@ -47,6 +62,9 @@ export function LoginForm({className, ...props}) {
                             <a href="/sign-up" className="underline underline-offset-4">Sign Up</a>
                         </div>
                     </form>
+
+                    <Button onClick={handleLoginWithGoogleClick} variant="outline" className="w-full mt-5">Login with Google</Button>
+
                 </CardContent>
             </Card>
         </div>)

@@ -53,7 +53,7 @@ const NavbarComponent = () => {
                             <CardContent className="flex items-center space-x-4 p-2">
                                 <Avatar>
                                     <AvatarImage src={user?.photoURL}/>
-                                    {/*<AvatarFallback>CN</AvatarFallback>*/}
+                                    <AvatarFallback>CN</AvatarFallback>
                                 </Avatar>
                                 <div>
                                     <h4 className="text-lg font-semibold">{user?.displayName}</h4>

@@ -1,4 +1,4 @@
-import {RegistrationForm} from "@/Components/registration-form.jsx";
+import {RegistrationForm} from "@/Components/ui/registration-form.jsx";
 import {useContext} from "react";
 import AuthContext from "@/Providers/AuthContext.jsx";
 import {toast} from "react-toastify";
