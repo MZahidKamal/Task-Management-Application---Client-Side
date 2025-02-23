@@ -260,7 +260,7 @@ const AuthProvider = ({children}) => {
             );
             // console.log('response: ', response.data);
 
-            await setUser(response?.data);
+            await setUser(response?.data?.data);
 
             toast.success('Sign In using Google completed successfully!');
         }
@@ -293,7 +293,7 @@ const AuthProvider = ({children}) => {
                         }
                     );
                     // console.log("User data:", userResponse?.data);
-                    setUser(userResponse?.data);
+                    setUser(userResponse?.data?.data);
 
                     // Fetch server generated JWT token
                     const tokenResponse = await axios.post(
