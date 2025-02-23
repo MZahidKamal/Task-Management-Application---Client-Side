@@ -1,17 +1,26 @@
 import {LoginForm} from "@/Components/login-form.jsx";
+import {useContext} from "react";
+import AuthContext from "@/Providers/AuthContext.jsx";
+import {useNavigate} from "react-router-dom";
 
 
 const SignInComponent = () => {
 
+    const {signInExistingUsers} = useContext(AuthContext);
+    const navigate = useNavigate();
 
-    const handleSubmit = (formData) => {
-        formData.preventDefault();
-        // console.log("Form submitted with data:", formData?.target[0].value);
-        const email = formData?.target[0].value;
-        const password = formData?.target[1].value;
-        console.log(email, password);
-        // Here you can handle the form data
-        formData.reset;
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        // console.log("Form submitted with data:", event);
+
+        const email = event?.target[0].value;
+        const password = event?.target[1].value;
+        // console.log(email, password);
+
+        await signInExistingUsers(email, password);
+        event.reset;
+        navigate('/');
     };
 
 

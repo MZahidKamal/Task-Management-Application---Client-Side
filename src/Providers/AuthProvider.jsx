@@ -81,7 +81,7 @@ const AuthProvider = ({children}) => {
                     },
                 }
             );
-            console.log('response: ', response?.data);
+            // console.log('response: ', response?.data);
 
             if (response?.data?.status === 201) {
                 toast.success(response?.data?.message);
@@ -102,14 +102,15 @@ const AuthProvider = ({children}) => {
             setUserLoading(true);
 
             const user_availability_in_database = await checking_user_availability_in_database(email);
-            if (!user_availability_in_database) {
+            if (!user_availability_in_database?.exists) {
                 toast.warning('Sign in failed. Email address not exists!');
                 setUserLoading(false);
-                navigate('/registration');
+                navigate('/sign-up');
                 return;
             }
 
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            // console.log(userCredential)
 
             if (userCredential){
                 const response = await axios.post(
@@ -122,10 +123,10 @@ const AuthProvider = ({children}) => {
                         },
                     }
                 );
-                // console.log('response: ', response.data);
+                // console.log('Response: ', response?.data?.data);
 
-                await setUser(response?.data);
-                toast.success('Login successful!');
+                await setUser(response?.data?.data);
+                toast.success(response?.data?.message);
             }
         }
         catch (error) {

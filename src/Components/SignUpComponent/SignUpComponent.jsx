@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 
 const SignUpComponent = () => {
 
-    const {signUpNewUser} = useContext(AuthContext)
+    const {signUpNewUser} = useContext(AuthContext);
     const navigate = useNavigate();
 
 
