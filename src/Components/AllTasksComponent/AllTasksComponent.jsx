@@ -1,90 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import moment from "moment"
-import {useState} from "react";
+import {useContext, useState} from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-
-
-const tasks = {
-    "To-Do": [
-        {
-            id: 1,
-            title: "Design User Interface",
-            description: "Create wireframes and mockups for the new dashboard",
-            deadline: "2024-03-25 14:00",
-        },
-        {
-            id: 2,
-            title: "Setup Database Schema",
-            description: "Design and implement database structure for user management",
-            deadline: "2024-03-26 16:30",
-        },
-        {
-            id: 3,
-            title: "Write API Documentation",
-            description: "Document all API endpoints and their usage",
-            deadline: "2024-03-27 12:00",
-        },
-        {
-            id: 4,
-            title: "Unit Testing",
-            description: "Write unit tests for core functionality",
-            deadline: "2024-03-28 15:00",
-        }
-    ],
-    "In Progress": [
-        {
-            id: 5,
-            title: "Implement Authentication",
-            description: "Add user login and registration functionality",
-            deadline: "2024-03-24 11:00",
-        },
-        {
-            id: 6,
-            title: "Mobile Responsiveness",
-            description: "Make application responsive for all devices",
-            deadline: "2024-03-25 13:30",
-        },
-        {
-            id: 7,
-            title: "Performance Optimization",
-            description: "Optimize application loading speed and performance",
-            deadline: "2024-03-26 10:00",
-        },
-        {
-            id: 8,
-            title: "Bug Fixes",
-            description: "Fix reported bugs in the payment module",
-            deadline: "2024-03-27 16:00",
-        }
-    ],
-    "Done": [
-        {
-            id: 9,
-            title: "Project Setup",
-            description: "Initialize project and setup development environment",
-            deadline: "2024-03-20 09:00",
-        },
-        {
-            id: 10,
-            title: "Requirements Analysis",
-            description: "Analyze and document project requirements",
-            deadline: "2024-03-21 14:00",
-        },
-        {
-            id: 11,
-            title: "Team Meeting",
-            description: "Weekly team sync and progress update",
-            deadline: "2024-03-22 11:00",
-        },
-        {
-            id: 12,
-            title: "Code Review",
-            description: "Review and approve pending pull requests",
-            deadline: "2024-03-23 15:30",
-        }
-    ]
-}
+import DataContext from "@/Providers/DataContext.jsx";
 
 
 const categoryColors = {
@@ -96,6 +15,7 @@ const categoryColors = {
 
 const AllTasksComponent = () => {
 
+    const {allMyTasks} = useContext(DataContext);
     const [isEditing, setIsEditing] = useState(false);
     const [currentTask, setCurrentTask] = useState(null);
 
@@ -123,9 +43,19 @@ const AllTasksComponent = () => {
     };
 
 
+    // Group tasks by category
+    const groupedTasks = allMyTasks?.reduce((acc, task) => {
+        if (!acc[task.category]) {
+            acc[task.category] = [];
+        }
+        acc[task.category].push(task);
+        return acc;
+    }, {});
+
+
     return (
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-6">
-            {Object.entries(tasks).map(([category, categoryTasks]) => (
+            {groupedTasks && Object.entries(groupedTasks).map(([category, categoryTasks]) => (
                 <Card key={category} className={`${categoryColors[category]} p-4`}>
                     <div className="flex gap-4">
                         <div className="writing-mode-vertical text-xl font-bold p-2 flex justify-center items-center">
@@ -134,9 +64,9 @@ const AllTasksComponent = () => {
                         <ScrollArea className="w-full">
                             <div className="flex flex-col gap-2">
                                 {categoryTasks.map((task) => (
-                                    <Card key={task.id}>
+                                    <Card key={task._id}>
                                         <CardContent className="p-4">
-                                            {isEditing && currentTask.id === task.id ? (
+                                            {isEditing && currentTask._id === task._id ? (
                                                 <div className={'space-y-1'}>
                                                     <input
                                                         name="title"
