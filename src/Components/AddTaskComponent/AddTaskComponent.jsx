@@ -1,46 +1,48 @@
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { useForm } from "react-hook-form"
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormMessage,
-} from "@/components/ui/form"
-import { AlertCircle } from "lucide-react"
-import { Calendar } from "@/components/ui/calendar"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-import { CalendarIcon } from "lucide-react"
-import { format } from "date-fns"
-import { cn } from "@/lib/utils"
+import {Input} from "@/components/ui/input"
+import {Textarea} from "@/components/ui/textarea"
+import {Button} from "@/components/ui/button"
+import {Checkbox} from "@/components/ui/checkbox"
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
+import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form"
+import {Calendar} from "@/components/ui/calendar"
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
+import {AlertCircle} from "lucide-react"
+import {CalendarIcon} from "lucide-react"
+import {useForm} from "react-hook-form"
+import {format} from "date-fns"
+import {cn} from "@/lib/utils"
+import {useContext} from "react";
+import DataContext from "@/Providers/DataContext.jsx";
 
 
 const AddTaskComponent = () => {
+
+    const {saveNewTaskToDatabase} = useContext(DataContext);
+
     const form = useForm({
         defaultValues: {
             title: "",
             description: "",
             date: new Date(),
-            time: "",
+            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
             category: "To-Do"
         }
     })
 
-    const onSubmit = (data) => {
-        console.log({
-            ...data,
-            deadline: `${format(data.date, "yyyy-MM-dd")} ${data.time}`
-        })
-        form.reset()
+
+    const onSubmit = async (event) => {
+        const task = {
+            title: event?.title,
+            description: event?.description,
+            deadline: `${format(event.date, "yyyy-MM-dd")} ${event.time}`,
+            category: event?.category,
+            createdOn: new Date().toISOString()
+        }
+        await saveNewTaskToDatabase(task);
+        // console.log(task);
+        // form.reset();
     }
+
 
     return (
         <Card className="w-1/2 mx-auto my-6">
@@ -53,14 +55,15 @@ const AddTaskComponent = () => {
                         <FormField
                             control={form.control}
                             name="title"
-                            rules={{ required: "Task title is required" }}
-                            render={({ field }) => (
+                            rules={{required: "Task title is required"}}
+                            render={({field}) => (
                                 <FormItem>
                                     <FormControl>
                                         <Input placeholder="Task Title" {...field} />
                                     </FormControl>
                                     <FormMessage className="text-red-500 text-sm flex items-center gap-1">
-                                        {form.formState.errors.title && <AlertCircle className="h-4 w-4 text-yellow-500" />}
+                                        {form.formState.errors.title &&
+                                            <AlertCircle className="h-4 w-4 text-yellow-500"/>}
                                         {form.formState.errors.title?.message}
                                     </FormMessage>
                                 </FormItem>
@@ -70,14 +73,15 @@ const AddTaskComponent = () => {
                         <FormField
                             control={form.control}
                             name="description"
-                            rules={{ required: "Task description is required" }}
-                            render={({ field }) => (
+                            rules={{required: "Task description is required"}}
+                            render={({field}) => (
                                 <FormItem>
                                     <FormControl>
                                         <Textarea placeholder="Task Description" {...field} />
                                     </FormControl>
                                     <FormMessage className="text-red-500 text-sm flex items-center gap-1">
-                                        {form.formState.errors.description && <AlertCircle className="h-4 w-4 text-yellow-500" />}
+                                        {form.formState.errors.description &&
+                                            <AlertCircle className="h-4 w-4 text-yellow-500"/>}
                                         {form.formState.errors.description?.message}
                                     </FormMessage>
                                 </FormItem>
@@ -88,8 +92,8 @@ const AddTaskComponent = () => {
                             <FormField
                                 control={form.control}
                                 name="date"
-                                rules={{ required: "Date is required" }}
-                                render={({ field }) => (
+                                rules={{required: "Date is required"}}
+                                render={({field}) => (
                                     <FormItem className="flex-1">
                                         <Popover>
                                             <PopoverTrigger asChild>
@@ -106,7 +110,7 @@ const AddTaskComponent = () => {
                                                         ) : (
                                                             <span>Pick a date</span>
                                                         )}
-                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50"/>
                                                     </Button>
                                                 </FormControl>
                                             </PopoverTrigger>
@@ -123,7 +127,8 @@ const AddTaskComponent = () => {
                                             </PopoverContent>
                                         </Popover>
                                         <FormMessage className="text-red-500 text-sm flex items-center gap-1">
-                                            {form.formState.errors.date && <AlertCircle className="h-4 w-4 text-yellow-500" />}
+                                            {form.formState.errors.date &&
+                                                <AlertCircle className="h-4 w-4 text-yellow-500"/>}
                                             {form.formState.errors.date?.message}
                                         </FormMessage>
                                     </FormItem>
@@ -133,8 +138,8 @@ const AddTaskComponent = () => {
                             <FormField
                                 control={form.control}
                                 name="time"
-                                rules={{ required: "Time is required" }}
-                                render={({ field }) => (
+                                rules={{required: "Time is required"}}
+                                render={({field}) => (
                                     <FormItem className="flex-1">
                                         <FormControl>
                                             <Input
@@ -144,7 +149,8 @@ const AddTaskComponent = () => {
                                             />
                                         </FormControl>
                                         <FormMessage className="text-red-500 text-sm flex items-center gap-1">
-                                            {form.formState.errors.time && <AlertCircle className="h-4 w-4 text-yellow-500" />}
+                                            {form.formState.errors.time &&
+                                                <AlertCircle className="h-4 w-4 text-yellow-500"/>}
                                             {form.formState.errors.time?.message}
                                         </FormMessage>
                                     </FormItem>
@@ -155,12 +161,12 @@ const AddTaskComponent = () => {
                         <FormField
                             control={form.control}
                             name="category"
-                            rules={{ required: "Please select a category" }}
-                            render={({ field }) => (
+                            rules={{required: "Please select a category"}}
+                            render={({field}) => (
                                 <FormItem>
                                     <div className="flex space-x-4">
                                         <div className="flex items-center space-x-2">
-                                            <Checkbox 
+                                            <Checkbox
                                                 id="todo"
                                                 checked={field.value === "To-Do"}
                                                 onCheckedChange={() => field.onChange("To-Do")}
@@ -170,7 +176,7 @@ const AddTaskComponent = () => {
                                         </div>
 
                                         <div className="flex items-center space-x-2">
-                                            <Checkbox 
+                                            <Checkbox
                                                 id="progress"
                                                 checked={field.value === "In Progress"}
                                                 onCheckedChange={() => field.onChange("In Progress")}
@@ -179,7 +185,7 @@ const AddTaskComponent = () => {
                                         </div>
 
                                         <div className="flex items-center space-x-2">
-                                            <Checkbox 
+                                            <Checkbox
                                                 id="done"
                                                 checked={field.value === "Done"}
                                                 onCheckedChange={() => field.onChange("Done")}
@@ -188,7 +194,8 @@ const AddTaskComponent = () => {
                                         </div>
                                     </div>
                                     <FormMessage className="text-red-500 text-sm flex items-center gap-1">
-                                        {form.formState.errors.category && <AlertCircle className="h-4 w-4 text-yellow-500" />}
+                                        {form.formState.errors.category &&
+                                            <AlertCircle className="h-4 w-4 text-yellow-500"/>}
                                         {form.formState.errors.category?.message}
                                     </FormMessage>
                                 </FormItem>
@@ -203,4 +210,4 @@ const AddTaskComponent = () => {
     )
 }
 
-export default AddTaskComponent
+export default AddTaskComponent;

@@ -43,10 +43,6 @@ const NavbarComponent = () => {
                         </Link>
                     }
 
-                    {user &&
-                        <Button variant="outline" onClick={handleSignOutClick} className={'ml-10 cursor-pointer'}>Sign Out</Button>
-                    }
-
                     <Card className="border-0 mx-10 ml-20 shadow-none">
                         {userLoading && 'Loading...'}
                         {user &&
@@ -63,6 +59,9 @@ const NavbarComponent = () => {
                         }
                     </Card>
 
+                    {user &&
+                        <Button variant="outline" onClick={handleSignOutClick} className={'ml-10 cursor-pointer'}>Sign Out</Button>
+                    }
 
                 </div>
             </div>

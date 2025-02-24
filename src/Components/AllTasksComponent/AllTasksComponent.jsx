@@ -1,8 +1,9 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import moment from "moment"
-import { useState } from "react";
+import {useState} from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
+
 
 const tasks = {
     "To-Do": [
@@ -85,34 +86,42 @@ const tasks = {
     ]
 }
 
+
 const categoryColors = {
     "To-Do": "bg-red-50",
     "In Progress": "bg-blue-50",
     "Done": "bg-green-50"
 }
 
+
 const AllTasksComponent = () => {
+
     const [isEditing, setIsEditing] = useState(false);
     const [currentTask, setCurrentTask] = useState(null);
+
 
     const handleEditClick = (task) => {
         setCurrentTask({ ...task });
         setIsEditing(true);
     };
 
+
     const handleSave = () => {
         console.log("Updated Task:", currentTask);
         setIsEditing(false);
     };
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setCurrentTask((prev) => ({ ...prev, [name]: value }));
     };
 
+
     const handleDeleteClick = (task) => {
         console.log("Delete this task: ", task)
     };
+
 
     return (
         <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 my-6">
