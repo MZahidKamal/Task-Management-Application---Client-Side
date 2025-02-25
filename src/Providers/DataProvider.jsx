@@ -80,11 +80,40 @@ const DataProvider = ({children}) => {
     });
 
 
+    const { mutateAsync: deleteATaskFromDatabase } = useMutation({
+        mutationFn: async (taskId) => {
+            if (!user?.email) {
+                toast.error("User not logged in");
+                return;
+            }
+            try {
+                const response = await axiosSecure.delete(
+                    `/tasks/delete_one_of_my_task`,
+                    {params: {userEmail: user?.email, taskId: taskId}}
+                );
+                // console.log(response?.data);
+                if (response?.data?.status === 200) {
+                    toast.success(response?.data?.message);
+                    await refetchAllMyTasks();
+                } else if (response?.data?.status === 404) {
+                    toast.error(response?.data?.message);
+                } else {
+                    toast.error("Failed to delete task");
+                }
+            } catch (error) {
+                toast.error(`Failed to delete task. Error: ${error.code}: ${error.message}`);
+                throw error;
+            }
+        },
+    });
+
+
     const dataInfo = {
         saveNewTaskToDatabase,
         allMyTasks,
         refetchAllMyTasks,
         saveUpdatedTaskToDatabase,
+        deleteATaskFromDatabase
     };
 
 
