@@ -14,6 +14,16 @@ const DataProvider = ({children}) => {
     const axiosSecure = useAxiosSecure();
 
 
+    const {data: allCategories, isLoading: allCategoriesLoading} = useQuery({
+        queryKey: ['allCategories'],
+        queryFn: async () => {
+            const response = await axiosSecure.get(`/categories/get_all_categories`);
+            // console.log(response?.data?.data);
+            return response?.data?.data || [];
+        }
+    });
+
+
     const { mutateAsync: saveNewTaskToDatabase } = useMutation({
         mutationFn: async (newTask) => {
             if (!user?.email) {
@@ -38,7 +48,7 @@ const DataProvider = ({children}) => {
     });
 
 
-    const {data: allMyTasks, refetch: refetchAllMyTasks} = useQuery({
+    const {data: allMyTasks, isLoading: allMyTasksLoading, refetch: refetchAllMyTasks} = useQuery({
         queryKey: ['allMyTasks', user?.email],
         queryFn: async () => {
             const response = await axiosSecure.get(`/tasks/all_my_tasks`,
@@ -108,12 +118,45 @@ const DataProvider = ({children}) => {
     });
 
 
+    const { mutateAsync: updateTaskCategoryIntoDatabase } = useMutation({
+        mutationFn: async ({taskId, categoryId}) => {
+            if (!user?.email) {
+                toast.error("User not logged in");
+                return;
+            }
+            try {
+                const response = await axiosSecure.patch(
+                    `/tasks/update_task_position_in_category`,
+                    { userEmail: user?.email, taskId: taskId, categoryId: categoryId }
+                );
+                if (response?.data?.status === 200) {
+                    toast.success(response?.data?.message);
+                    await refetchAllMyTasks();
+                } else if (response?.data?.status === 404) {
+                    toast.error(response?.data?.message);
+                } else if (response?.data?.status === 403) {
+                    toast.error(response?.data?.message);
+                } else {
+                    toast.error(response?.data?.message || "Failed to update task category");
+                }
+            } catch (error) {
+                toast.error(`Failed to update task category. Error: ${error.code}: ${error.message}`);
+                throw error;
+            }
+        },
+    });
+
+
     const dataInfo = {
+        allCategories,
+        allCategoriesLoading,
         saveNewTaskToDatabase,
         allMyTasks,
+        allMyTasksLoading,
         refetchAllMyTasks,
         saveUpdatedTaskToDatabase,
-        deleteATaskFromDatabase
+        deleteATaskFromDatabase,
+        updateTaskCategoryIntoDatabase
     };
 
 

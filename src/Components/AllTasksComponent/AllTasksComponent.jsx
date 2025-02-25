@@ -1,44 +1,43 @@
-import {useContext} from "react";
+import {useContext, useEffect, useState} from "react";
 import DataContext from "@/Providers/DataContext.jsx";
-import SingleTaskCard from "@/Components/SingleTaskCard/SingleTaskCard.jsx";
+import {closestCenter, DndContext} from "@dnd-kit/core";
+import SingleCategoryCard from "@/Components/SingleCategoryCard/SingleCategoryCard.jsx";
 
 
 const AllTasksComponent = () => {
 
-    const {allMyTasks} = useContext(DataContext);
+    const {allCategories, allMyTasks, updateTaskCategoryIntoDatabase} = useContext(DataContext);
+
+    const [allTasks, setAllTasks] = useState([]);
+    useEffect(() => {
+        setAllTasks(allMyTasks);
+    }, [allMyTasks]);
 
 
-    const toDoTasks = allMyTasks?.filter((task) => task?.category === 'To-Do');
-    const inProgressTasks = allMyTasks?.filter((task) => task?.category === 'In Progress');
-    const doneTasks = allMyTasks?.filter((task) => task?.category === 'Done');
+    const handleDragAndDropEnd = async (event) => {
+        const {active, over} = event;
+
+        if (!active || !over) return;
+
+        const taskId = active?.id;
+        const categoryId = over?.id;
+        // console.log(taskId, categoryId);
+
+        await updateTaskCategoryIntoDatabase ({taskId, categoryId});
+    }
 
 
     return (
         <div className={'grid grid-cols-3 gap-4'}>
-            <div className={'bg-red-50 col-span-1 p-5 rounded-md flex justify-start items-start'}>
-                <h1 className={'writing-mode-vertical text-3xl font-bold mx-4'}>To Do</h1>
-                <div className={'mt-2 px-3 py-2 rounded-sm space-y-2 grow'}>
-                    {toDoTasks?.map((task, index) => (
-                        <SingleTaskCard key={index} task={task}></SingleTaskCard>
-                    ))}
-                </div>
-            </div>
-            <div className={'bg-blue-50 col-span-1 p-5 rounded-md flex justify-start items-start'}>
-                <h1 className={'writing-mode-vertical text-3xl font-bold mx-4'}>In Progress</h1>
-                <div className={'mt-2 px-3 py-2 rounded-sm space-y-2 grow'}>
-                    {inProgressTasks?.map((task, index) => (
-                        <SingleTaskCard key={index} task={task}></SingleTaskCard>
-                    ))}
-                </div>
-            </div>
-            <div className={'bg-green-50 col-span-1 p-5 rounded-md flex justify-start items-start'}>
-                <h1 className={'writing-mode-vertical text-3xl font-bold mx-4'}>Done</h1>
-                <div className={'mt-2 px-3 py-2 rounded-sm space-y-2 grow'}>
-                    {doneTasks?.map((task, index) => (
-                        <SingleTaskCard key={index} task={task}></SingleTaskCard>
-                    ))}
-                </div>
-            </div>
+
+            <DndContext onDragEnd={handleDragAndDropEnd} collisionDetection={closestCenter}>
+
+                {allCategories?.map((category) => (
+                    <SingleCategoryCard key={category?._id} category={category} allTasks={allTasks}></SingleCategoryCard>
+                ))}
+
+            </DndContext>
+
         </div>
     )
 }
