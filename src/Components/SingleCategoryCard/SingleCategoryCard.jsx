@@ -11,8 +11,10 @@ const SingleCategoryCard = ({category, allTasks}) => {
 
     const {setNodeRef} = useDroppable({id: category?._id})
 
+    const categoryBG = category?.name === 'To-Do' ? 'bg-red-50' : category?.name === 'In Progress' ? 'bg-blue-50' : category?.name === 'Done' ? 'bg-green-50' : 'bg-gray-50';
+
     return (
-        <div key={category?._id} className={'bg-red-50 col-span-1 p-5 rounded-md flex justify-start items-start'}>
+        <div key={category?._id} className={`col-span-1 pl-4 py-4 rounded-md flex justify-start items-start ${categoryBG}`}>
 
             <h1 className={'writing-mode-vertical text-3xl font-bold mx-4'}>{category?.name}</h1>
 

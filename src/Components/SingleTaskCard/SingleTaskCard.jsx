@@ -67,31 +67,32 @@ const SingleTaskCard = ({task}) => {
                 <button onClick={() => setIsEditing(false)} className="bg-red-500 text-white mt-1 px-2 rounded">Cancel</button>
             </div>
         ) : (
-            <div
-                {...attributes}
-                {...listeners}
-                ref={setNodeRef}
-                style={transform ? { transform: `translate(${transform.x}px, ${transform.y}px)` } : undefined}
-                className={'bg-white px-3 py-2 rounded-sm cursor-grab shadow-sm hover:shadow-lg'}
-            >
-                <div className="flex items-center mb-2">
-                    <h3 className="font-semibold">{task?.title}</h3>
+            <div className={'flex justify-between items-center space-x-2'}>
+                <div
+                    {...attributes}
+                    {...listeners}
+                    ref={setNodeRef}
+                    style={transform ? { transform: `translate(${transform.x}px, ${transform.y}px)` } : undefined}
+                    className={'bg-white px-3 py-2 rounded-sm cursor-grab grow shadow-sm hover:shadow-lg'}
+                >
+                    <div className="flex items-center mb-2">
+                        <h3 className="font-semibold">{task?.title}</h3>
+                    </div>
+                    <p className="text-sm text-gray-600 mb-2">{task?.description}</p>
+                    <p className="text-xs text-gray-500">Deadline: {moment(task?.deadline).format("DD-MMMM-YYYY [at] hh:mm A")}</p>
+
                 </div>
-                <p className="text-sm text-gray-600 mb-2">{task?.description}</p>
-                <p className="text-xs text-gray-500">Deadline: {moment(task?.deadline).format("DD-MMMM-YYYY [at] hh:mm A")}</p>
-                <div className="flex justify-end space-x-2">
+                <div className="flex flex-col justify-end space-y-4">
                     <button
                         onClick={() => handleEditClick(task)}
-                        className="text-blue-500 text-sm cursor-pointer flex justify-center items-center gap-2"
                         title="Edit"
-                    >
+                        className="text-blue-500 text-sm cursor-pointer flex justify-center items-center gap-2">
                         <FaEdit />
                     </button>
                     <button
                         onClick={() => handleDeleteClick(task)}
-                        className="text-red-500 text-sm cursor-pointer flex justify-center items-center gap-2"
                         title="Delete"
-                    >
+                        className="text-red-500 text-sm cursor-pointer flex justify-center items-center gap-2">
                         <FaTrash />
                     </button>
                 </div>
