@@ -43,10 +43,11 @@ const UseAxiosSecure = () => {
             // Any status codes that falls outside the range of 2xx cause this function to trigger
             console.log('Error caught in response interceptor: ', error)
 
-            if (error?.status === 401 || error?.status === 403) {
+            if (error?.data?.status === 401 || error?.data?.status === 403) {
+                // console.log(error?.data?.status);
                 signOutCurrentUser();
                 navigate('/sign-in');
-                console.log('Requesting forbidden access. User is logged out.')
+                console.log(error?.data?.status);
             }
 
             return Promise.reject(error);

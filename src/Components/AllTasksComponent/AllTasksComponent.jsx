@@ -60,7 +60,7 @@ const AllTasksComponent = () => {
             {groupedTasks && Object.entries(groupedTasks).map(([category, categoryTasks]) => (
                 <Card key={category} className={`${categoryColors[category]} p-4`}>
                     <div className="flex gap-4">
-                        <div className="writing-mode-vertical text-xl font-bold p-2 flex justify-center items-center">
+                        <div className="writing-mode-vertical text-4xl font-bold p-2 flex justify-end items-center">
                             {category}
                         </div>
                         <ScrollArea className="w-full">
