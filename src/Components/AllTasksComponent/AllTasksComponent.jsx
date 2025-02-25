@@ -15,7 +15,7 @@ const categoryColors = {
 
 const AllTasksComponent = () => {
 
-    const {allMyTasks} = useContext(DataContext);
+    const {allMyTasks, saveUpdatedTaskToDatabase} = useContext(DataContext);
     const [isEditing, setIsEditing] = useState(false);
     const [currentTask, setCurrentTask] = useState(null);
 
@@ -26,9 +26,10 @@ const AllTasksComponent = () => {
     };
 
 
-    const handleSave = () => {
-        console.log("Updated Task:", currentTask);
+    const handleSave = async () => {
         setIsEditing(false);
+        await saveUpdatedTaskToDatabase (currentTask);
+        // console.log("Updated Task:", currentTask);
     };
 
 
@@ -38,8 +39,8 @@ const AllTasksComponent = () => {
     };
 
 
-    const handleDeleteClick = (task) => {
-        console.log("Delete this task: ", task)
+    const handleDeleteClick = async (task) => {
+        console.log("Delete this task: ", task);
     };
 
 

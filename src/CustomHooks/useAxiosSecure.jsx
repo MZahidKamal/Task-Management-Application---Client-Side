@@ -41,7 +41,7 @@ const UseAxiosSecure = () => {
         },
         error => {
             // Any status codes that falls outside the range of 2xx cause this function to trigger
-            console.log('Error caught in response interceptor:')
+            console.log('Error caught in response interceptor: ', error)
 
             if (error?.status === 401 || error?.status === 403) {
                 signOutCurrentUser();

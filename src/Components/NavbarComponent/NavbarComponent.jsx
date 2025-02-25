@@ -21,7 +21,7 @@ const NavbarComponent = () => {
 
 
     return (
-        <div className={'border border-gray-300 rounded p-2'}>
+        <div className={'border border-gray-300 rounded-xl p-2'}>
             <div className="flex items-center justify-between">
                 <div className="min-w-60">
                     <Logo className="text-5xl"/>
@@ -60,7 +60,7 @@ const NavbarComponent = () => {
                     </Card>
 
                     {user &&
-                        <Button variant="outline" onClick={handleSignOutClick} className={'ml-10 cursor-pointer'}>Sign Out</Button>
+                        <Button variant="outline" onClick={handleSignOutClick} className={'mx-10 cursor-pointer'}>Sign Out</Button>
                     }
 
                 </div>

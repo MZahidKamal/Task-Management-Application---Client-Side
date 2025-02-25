@@ -209,7 +209,7 @@ const AuthProvider = ({children}) => {
             setUserLoading(true);
 
             const userCredential = await signInWithPopup(auth, provider);
-            console.log(userCredential);
+            // console.log(userCredential);
 
             const user_availability_in_database = await checking_user_availability_in_database(userCredential?.user?.email);
 
@@ -300,7 +300,7 @@ const AuthProvider = ({children}) => {
                         }
                     );
                     // console.log("JSON Web Token:", tokenResponse?.data);
-                    console.log("JSON Web Token created and saved. User is logged in.");
+                    if (tokenResponse?.data) console.log("JSON Web Token created and saved. User is logged in.");
                 }
                 catch (error) {
                     console.error("Error during authentication flow:", error);
@@ -324,7 +324,7 @@ const AuthProvider = ({children}) => {
                     }
                 );
                 // console.log("JSON Web Token Cleared:", tokenClearResponse?.data);
-                console.log("JSON Web Token Cleared. User is logged out.");
+                if (tokenClearResponse?.data) console.log("JSON Web Token Cleared. User is logged out.");
 
                 setUser(null);
                 setUserLoading(false); // Set loading to false
