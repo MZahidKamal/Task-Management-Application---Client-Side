@@ -4,7 +4,7 @@ import { Logo } from "@/components/ui/Logo"
 
 const FooterComponent = () => {
     return (
-        <footer className={'mt-10'}>
+        <footer className={'mt-10 w-11/12 mx-auto'}>
             <Card>
                 <CardContent className="flex justify-center items-center pt-5 space-x-10">
                     <Logo/>

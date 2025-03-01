@@ -1,64 +1,84 @@
-import PropTypes from "prop-types";
-import {useContext} from "react";
-import DataContext from "./DataContext.jsx";
-import AuthContext from "./AuthContext.jsx";
+import { useContext } from "react";
+import AuthContext from "@/Providers/AuthContext.jsx";
+import useAxiosSecure from "@/CustomHooks/useAxiosSecure.jsx";
 import {useMutation, useQuery} from "@tanstack/react-query";
-import {toast} from "react-toastify";
-import useAxiosSecure from "../CustomHooks/useAxiosSecure.jsx";
+import { toast } from "react-toastify";
 
 
-const DataProvider = ({children}) => {
+const UseTasks = ({ taskId = '' }) => {
 
 
-    const {user} = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
     const axiosSecure = useAxiosSecure();
 
 
-    const {data: allCategories, isLoading: allCategoriesLoading} = useQuery({
-        queryKey: ['allCategories'],
-        queryFn: async () => {
-            const response = await axiosSecure.get(`/categories/get_all_categories`);
-            // console.log(response?.data?.data);
-            return response?.data?.data || [];
-        }
-    });
 
-
-    const { mutateAsync: saveNewTaskToDatabase } = useMutation({
-        mutationFn: async (newTask) => {
-            if (!user?.email) {
+    const { mutateAsync: saveNewTaskToDatabase, isLoading: addTaskIsLoading, isError: addTaskIsError, error: addTaskError } = useMutation({
+        mutationFn: async (newTaskObject) => {
+            if (!user) {
                 toast.error("User not logged in");
-                return;
+                return null;
             }
+            if (!newTaskObject) {
+                toast.error("No task object provided");
+                return null;
+            }
+            // console.log(newTaskObject);
             try {
                 const response = await axiosSecure.post(
                     `/tasks/create_new_task`,
-                    { userEmail: user?.email, newTaskObj: newTask }
+                    { userEmail: user?.email, newTaskObj: newTaskObject }
                 );
                 if (response?.data?.status === 201) {
+                    await refetchAllMyTaskIds();
                     toast.success(response?.data?.message);
-                    await refetchAllMyTasks();
-                } else {
-                    toast.error(response?.data?.message || "Failed to add task");
                 }
-            } catch (error) {
+                else toast.error(response?.data?.message || "Failed to add task");
+            }
+            catch (error) {
                 toast.error(`Failed to add task. Error: ${error?.code}: ${error?.message}`);
+                throw error;
             }
         },
     });
 
 
-    const {data: allMyTasks, isLoading: allMyTasksLoading, refetch: refetchAllMyTasks} = useQuery({
-        queryKey: ['allMyTasks', user?.email],
+
+    const {data: allCategories, isLoading: categoriesIsLoading, refetch: refetchAllCategories} = useQuery({
+        queryKey: ['allCategories'],
         queryFn: async () => {
-            const response = await axiosSecure.get(`/tasks/all_my_tasks`,
-                {params: {userEmail: user?.email}}
+            const response = await axiosSecure.get(`/categories/get_all_categories`)
+            return response.data?.data || []
+        },
+    });
+
+
+
+    const {data: allMyTaskIds, isLoading: allMyTaskIdsIsLoading, refetch: refetchAllMyTaskIds} = useQuery({
+        queryKey: ['allMyTaskIds', user?.email],
+        queryFn: async () => {
+            const response = await axiosSecure.get(
+                `/tasks/all_my_task_ids`,
+                {params: {userEmail: user?.email}})
+            return response?.data?.data || []
+        },
+        enabled: !!user?.email
+    });
+
+
+
+    const {data: taskDetails, isLoading: taskDetailsIsLoading, refetch: refetchTaskDetails} = useQuery({
+        queryKey: ['taskDetails', user?.email, taskId],
+        queryFn: async () => {
+            const response = await axiosSecure.get(`/tasks/tasks_details_by_id`,
+                {params: {userEmail: user?.email, taskId: taskId}}
             );
             // console.log(response?.data?.data);
             return response?.data?.data || [];
         },
-        enabled: !!user?.email
+        enabled: !!user?.email && !!taskId
     });
+
 
 
     const { mutateAsync: saveUpdatedTaskToDatabase } = useMutation({
@@ -73,8 +93,8 @@ const DataProvider = ({children}) => {
                     { userEmail: user?.email, updatedTaskObj: updatedTaskObj }
                 );
                 if (response?.data?.status === 200) {
+                    await refetchAllMyTaskIds();
                     toast.success(response?.data?.message);
-                    await refetchAllMyTasks();
                 } else if (response?.data?.status === 404) {
                     toast.error(response?.data?.message);
                 } else if (response?.data?.status === 403) {
@@ -90,6 +110,7 @@ const DataProvider = ({children}) => {
     });
 
 
+
     const { mutateAsync: deleteATaskFromDatabase } = useMutation({
         mutationFn: async (taskId) => {
             if (!user?.email) {
@@ -103,8 +124,8 @@ const DataProvider = ({children}) => {
                 );
                 // console.log(response?.data);
                 if (response?.data?.status === 200) {
+                    await refetchAllMyTaskIds();
                     toast.success(response?.data?.message);
-                    await refetchAllMyTasks();
                 } else if (response?.data?.status === 404) {
                     toast.error(response?.data?.message);
                 } else {
@@ -116,6 +137,7 @@ const DataProvider = ({children}) => {
             }
         },
     });
+
 
 
     const { mutateAsync: updateTaskCategoryIntoDatabase } = useMutation({
@@ -130,8 +152,8 @@ const DataProvider = ({children}) => {
                     { userEmail: user?.email, taskId: taskId, categoryId: categoryId }
                 );
                 if (response?.data?.status === 200) {
+                    await refetchAllMyTaskIds();
                     toast.success(response?.data?.message);
-                    await refetchAllMyTasks();
                 } else if (response?.data?.status === 404) {
                     toast.error(response?.data?.message);
                 } else if (response?.data?.status === 403) {
@@ -147,31 +169,17 @@ const DataProvider = ({children}) => {
     });
 
 
-    const dataInfo = {
-        allCategories,
-        allCategoriesLoading,
-        saveNewTaskToDatabase,
-        allMyTasks,
-        allMyTasksLoading,
-        refetchAllMyTasks,
+
+    return {
+        saveNewTaskToDatabase, addTaskIsLoading, addTaskIsError, addTaskError,
+        allCategories, categoriesIsLoading, refetchAllCategories,
+        allMyTaskIds, allMyTaskIdsIsLoading, refetchAllMyTaskIds,
+        taskDetails, taskDetailsIsLoading, refetchTaskDetails,
         saveUpdatedTaskToDatabase,
         deleteATaskFromDatabase,
         updateTaskCategoryIntoDatabase
     };
-
-
-    return (
-        <div>
-            <DataContext.Provider value={dataInfo}>
-                {children}
-            </DataContext.Provider>
-        </div>
-    );
 };
 
 
-DataProvider.propTypes = {
-    children: PropTypes.node,
-}
-
-export default DataProvider;
+export default UseTasks;

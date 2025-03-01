@@ -1,28 +1,24 @@
 import PropTypes from "prop-types";
 import moment from "moment";
-import {useContext, useState} from "react";
-import DataContext from "@/Providers/DataContext.jsx";
+import {useState} from "react";
 import {FaEdit, FaTrash} from "react-icons/fa";
 import {useDraggable} from "@dnd-kit/core";
+// import {useSortable} from "@dnd-kit/sortable";
+// import { CSS } from "@dnd-kit/utilities";
+import useTasks from "@/CustomHooks/useTasks.jsx";
 
-const SingleTaskCard = ({task}) => {
+
+const SingleTaskCard = ({category, taskIndex, taskId}) => {
 
 
-    const {saveUpdatedTaskToDatabase, deleteATaskFromDatabase} = useContext(DataContext);
+    const {taskDetails, taskDetailsIsLoading, refetchTaskDetails, saveUpdatedTaskToDatabase, deleteATaskFromDatabase} = useTasks({taskId});
     const [isEditing, setIsEditing] = useState(false);
     const [currentTask, setCurrentTask] = useState(null);
 
 
-    const handleEditClick = (task) => {
-        setCurrentTask({ ...task });
+    const handleEditClick = () => {
+        setCurrentTask(taskDetails);
         setIsEditing(true);
-    };
-
-
-    const handleSave = async () => {
-        setIsEditing(false);
-        await saveUpdatedTaskToDatabase (currentTask);
-        // console.log("Updated Task:", currentTask);
     };
 
 
@@ -32,13 +28,40 @@ const SingleTaskCard = ({task}) => {
     };
 
 
-    const handleDeleteClick = async (task) => {
-        await deleteATaskFromDatabase (task?._id);
+    const handleSave = async () => {
+        setIsEditing(false);
+        await saveUpdatedTaskToDatabase (currentTask);
+        await refetchTaskDetails();
+        // console.log("Updated Task:", currentTask);
+    };
+
+
+    const handleDeleteClick = async () => {
+        await deleteATaskFromDatabase (taskDetails?._id);
         // console.log("Delete this task: ", task);
     };
 
 
-    const {attributes, listeners, setNodeRef, transform} = useDraggable({id: task?._id})
+    const {attributes, listeners, setNodeRef, transform} = useDraggable({
+        id: taskDetails?._id,
+        data: { category: category?._id, taskIndex: taskIndex },
+    });
+    // const dnd_style={transform ? { transform: `translate(${transform.x}px, ${transform.y}px)` } : undefined}
+
+
+    /*const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+        id: taskDetails?._id,
+        data: { category: category?._id, taskIndex: taskIndex },
+    });*/
+
+
+    /*const dnd_style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };*/
+
+
+    if(taskDetailsIsLoading) return <h2 className={'text-xl font-semibold italic text-center'}>Loading...</h2>;
 
 
     return (
@@ -72,25 +95,25 @@ const SingleTaskCard = ({task}) => {
                     {...attributes}
                     {...listeners}
                     ref={setNodeRef}
+                    /*style={dnd_style}*/
                     style={transform ? { transform: `translate(${transform.x}px, ${transform.y}px)` } : undefined}
-                    className={'bg-white px-3 py-2 rounded-sm cursor-grab grow shadow-sm hover:shadow-lg'}
-                >
+                    className={'bg-white px-3 py-2 rounded-sm cursor-grab grow shadow-sm hover:shadow-lg'}>
                     <div className="flex items-center mb-2">
-                        <h3 className="font-semibold">{task?.title}</h3>
+                        <h3 className="font-semibold">{taskIndex+1}. {taskDetails?.title}</h3>
                     </div>
-                    <p className="text-sm text-gray-600 mb-2">{task?.description}</p>
-                    <p className="text-xs text-gray-500">Deadline: {moment(task?.deadline).format("DD-MMMM-YYYY [at] hh:mm A")}</p>
+                    <p className="text-sm text-gray-600 mb-2">{taskDetails?.description}</p>
+                    <p className="text-xs text-gray-500">Deadline: {moment(taskDetails?.deadline).format("DD-MMMM-YYYY [at] hh:mm A")}</p>
 
                 </div>
                 <div className="flex flex-col justify-end space-y-4">
                     <button
-                        onClick={() => handleEditClick(task)}
+                        onClick={handleEditClick}
                         title="Edit"
                         className="text-blue-500 text-sm cursor-pointer flex justify-center items-center gap-2">
                         <FaEdit />
                     </button>
                     <button
-                        onClick={() => handleDeleteClick(task)}
+                        onClick={handleDeleteClick}
                         title="Delete"
                         className="text-red-500 text-sm cursor-pointer flex justify-center items-center gap-2">
                         <FaTrash />
@@ -103,7 +126,9 @@ const SingleTaskCard = ({task}) => {
 
 
 SingleTaskCard.propTypes = {
-    task: PropTypes.object,
+    category: PropTypes.object,
+    taskIndex: PropTypes.number,
+    taskId: PropTypes.string,
 }
 
 export default SingleTaskCard;

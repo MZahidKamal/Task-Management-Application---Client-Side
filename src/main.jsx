@@ -7,7 +7,6 @@ import HomePage from "./Pages/HomePage/HomePage.jsx";
 import SignUpPage from "@/Pages/SignUpPage/SignUpPage.jsx";
 import SignInPage from "@/Pages/SignInPage/SignInPage.jsx";
 import AuthProvider from "@/Providers/AuthProvider.jsx";
-import DataProvider from "@/Providers/DataProvider.jsx";
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query'
 
 
@@ -19,15 +18,13 @@ createRoot(document.getElementById('root')).render(
         <BrowserRouter>
             <AuthProvider>
                 <QueryClientProvider client={queryClient}>
-                    <DataProvider>
-                        <Routes>
-                            <Route path={'/'} element={<MainLayout/>}>
-                                <Route path={'/'} element={<HomePage/>}></Route>
-                                <Route path={'/sign-up'} element={<SignUpPage/>}></Route>
-                                <Route path={'/sign-in'} element={<SignInPage/>}></Route>
-                            </Route>
-                        </Routes>
-                    </DataProvider>
+                    <Routes>
+                        <Route path={'/'} element={<MainLayout/>}>
+                            <Route path={'/'} element={<HomePage/>}></Route>
+                            <Route path={'/sign-up'} element={<SignUpPage/>}></Route>
+                            <Route path={'/sign-in'} element={<SignInPage/>}></Route>
+                        </Route>
+                    </Routes>
                 </QueryClientProvider>
             </AuthProvider>
         </BrowserRouter>

@@ -11,13 +11,15 @@ import {CalendarIcon} from "lucide-react"
 import {useForm} from "react-hook-form"
 import {format} from "date-fns"
 import {cn} from "@/lib/utils"
-import {useContext} from "react";
-import DataContext from "@/Providers/DataContext.jsx";
+import useTasks from "@/CustomHooks/useTasks.jsx";
+// import {useState} from "react";
 
 
 const AddTaskComponent = () => {
 
-    const {saveNewTaskToDatabase} = useContext(DataContext);
+
+    const { saveNewTaskToDatabase } = useTasks({});
+
 
     const form = useForm({
         defaultValues: {
@@ -25,7 +27,7 @@ const AddTaskComponent = () => {
             description: "",
             date: new Date(),
             time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-            category: "To-Do"
+            category: "To Do"
         }
     })
 
@@ -38,14 +40,15 @@ const AddTaskComponent = () => {
             category: event?.category,
             createdOn: new Date().toISOString()
         }
+
+        // console.log(newTask);
         await saveNewTaskToDatabase(task);
-        // console.log(task);
         // form.reset();
     }
 
 
     return (
-        <Card className="w-1/2 mx-auto my-6">
+        <Card className="max-w-3xl w-11/12 mx-auto my-6">
             <CardHeader>
                 <CardTitle className={'text-4xl font-bold'}>Create New Task</CardTitle>
             </CardHeader>
@@ -168,11 +171,11 @@ const AddTaskComponent = () => {
                                         <div className="flex items-center space-x-2">
                                             <Checkbox
                                                 id="todo"
-                                                checked={field.value === "To-Do"}
+                                                checked={field.value === "To Do"}
                                                 onCheckedChange={() => field.onChange("To-Do")}
                                                 defaultChecked
                                             />
-                                            <label htmlFor="todo">To-Do</label>
+                                            <label htmlFor="todo">To Do</label>
                                         </div>
 
                                         <div className="flex items-center space-x-2">

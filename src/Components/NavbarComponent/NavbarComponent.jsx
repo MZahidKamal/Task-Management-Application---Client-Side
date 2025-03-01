@@ -21,12 +21,12 @@ const NavbarComponent = () => {
 
 
     return (
-        <div className={'border border-gray-300 rounded-xl p-2'}>
+        <div className={'border border-gray-300 rounded-xl p-2 mx-auto w-11/12'}>
             <div className="flex items-center justify-between">
                 <div className="min-w-60">
                     <Logo className="text-5xl"/>
                 </div>
-                <div className="w-full flex flex-row justify-end items-center">
+                <div className="w-full flex flex-col lg:flex-row justify-end items-center">
                     <Link to={{pathname: '/'}}>
                         <Button variant="outline" className={'ml-10 cursor-pointer'}>Home</Button>
                     </Link>

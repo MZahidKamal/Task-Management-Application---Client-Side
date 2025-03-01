@@ -68,7 +68,11 @@ const AuthProvider = ({children}) => {
                 email: auth.currentUser.email,
                 photoURL: auth.currentUser.photoURL,
                 joinDate: new Date().toISOString(),
-                createdTasks: [],                               //Array of task ids created by this user.
+                myTasks: {
+                    myToDoTasks: [],                               //Array of To Do task ids created by this user.
+                    myInProgressTasks: [],                         //Array of In Progress task ids created by this user.
+                    myDoneTasks: [],                               //Array of Done task ids created by this user.
+                }
             };
             // console.log('userInfoForDatabase: ', userInfoForDatabase);
 
@@ -220,7 +224,11 @@ const AuthProvider = ({children}) => {
                     email: userCredential?.user?.email,
                     photoURL: userCredential?.user?.photoURL,
                     joinDate: new Date().toISOString(),
-                    createdTasks: [],                               //Array of task ids created by this user.
+                    myTasks: {
+                        myToDoTasks: [],                               //Array of To Do task ids created by this user.
+                        myInProgressTasks: [],                         //Array of In Progress task ids created by this user.
+                        myDoneTasks: [],                               //Array of Done task ids created by this user.
+                    }
                 };
                 // console.log('userInfoForDatabase: ', userInfoForDatabase);
 
