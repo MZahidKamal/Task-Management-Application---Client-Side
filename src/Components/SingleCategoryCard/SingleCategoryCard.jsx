@@ -3,22 +3,27 @@ import SingleTaskCard from "@/Components/SingleTaskCard/SingleTaskCard.jsx";
 import {useDroppable} from "@dnd-kit/core";
 import {SortableContext, verticalListSortingStrategy} from "@dnd-kit/sortable";
 import useTasks from "@/CustomHooks/useTasks.jsx";
+import {useEffect, useState} from "react";
 
 
 const SingleCategoryCard = ({category}) => {
 
 
     const {allMyTaskIds, allMyTaskIdsIsLoading} = useTasks({});
+    const [arrayOfIdsOfThisCategory, setArrayOfIdsOfThisCategory] = useState([]);
+
     const {setNodeRef} = useDroppable({
         id: category?._id,
         data: {category: category?.name}
     })
 
 
-    let ArrayOfIdsOfThisCategory = [];
-    if (category?.name === 'To Do') ArrayOfIdsOfThisCategory = allMyTaskIds?.myToDoTasks;
-    else if (category?.name === 'In Progress') ArrayOfIdsOfThisCategory = allMyTaskIds?.myInProgressTasks;
-    else if (category?.name === 'Done') ArrayOfIdsOfThisCategory = allMyTaskIds?.myDoneTasks;
+    useEffect(() => {
+        if (category?.name === 'To Do') setArrayOfIdsOfThisCategory (allMyTaskIds?.myToDoTasks);
+        else if (category?.name === 'In Progress') setArrayOfIdsOfThisCategory (allMyTaskIds?.myInProgressTasks);
+        else if (category?.name === 'Done') setArrayOfIdsOfThisCategory (allMyTaskIds?.myDoneTasks);
+    }, [category, allMyTaskIds]);
+
 
 
     const category_bg = category?.name === 'To Do'
@@ -39,12 +44,12 @@ const SingleCategoryCard = ({category}) => {
             <div ref={setNodeRef} className={'mt-2 px-3 py-2 rounded-sm space-y-3 grow'}>
 
                 <SortableContext
-                    items={ArrayOfIdsOfThisCategory || []}
+                    items={arrayOfIdsOfThisCategory || []}
                     strategy={verticalListSortingStrategy}
                 >
 
                     {allMyTaskIdsIsLoading ? <h2 className={'text-xl font-semibold italic text-center'}>Loading...</h2>
-                        : ArrayOfIdsOfThisCategory?.map((taskId, index) => (
+                        : arrayOfIdsOfThisCategory?.map((taskId, index) => (
                             <SingleTaskCard key={index} category={category} taskIndex={index} taskId={taskId}></SingleTaskCard>
                         ))}
 
